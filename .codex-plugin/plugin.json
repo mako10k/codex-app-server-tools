@@ -1,6 +1,6 @@
 {
   "name": "thread-watch",
-  "version": "0.6.11-candidate",
+  "version": "0.6.12-candidate",
   "description": "Typed chat and goal operations, bounded heartbeats and lifecycle watches through the official App Server Proxy.",
   "requires_local_executor": true,
   "skills": "./skills/",

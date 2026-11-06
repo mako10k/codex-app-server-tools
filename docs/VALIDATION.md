@@ -1,6 +1,6 @@
 # Validation and limits
 
-Version 0.6.11-candidate. Source suite: 153 passing tests. Public suite: 11 passing tests. Isolated native marketplace installation succeeded; fresh MCP exposed 25 tools, native resource read and current-thread metadata. The controller was not started by these checks. No production mutation is exercised by public-package tests.
+Version 0.6.12-candidate. Runtime baseline: 153 source tests passed for the preceding release; this update changes the Skill/docs and release version, with no functional runtime change. Public suite: 11 passing tests. Isolated native marketplace installation succeeded; fresh MCP exposed 25 tools, native resource read and current-thread metadata. The controller was not started by these checks. No production mutation is exercised by public-package tests.
 
 Native UI was visually confirmed on the corresponding Windows Codex App connected to Linux/WSL, including initial current-chat selection. The optional Web renderer and native MCP resource are distinct paths. Other host/version support remains unverified. Logo assets are square 512×512 and their install references were checked; a fresh plugin-list image rendering screenshot is unverified.
 
