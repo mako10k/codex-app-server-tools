@@ -8,7 +8,7 @@ export const CLIENT_PROTOCOL_BASELINE='0.166.0';
 const versionPattern=/^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$/;
 export function requireProtocolBaseline(v){requireValue(v===CLIENT_PROTOCOL_BASELINE,'UNSUPPORTED_CAPABILITY','The compiled protocol baseline is 0.166.0; register newer runtime versions through compatibility settings.');}
 export const cliVersion=text=>/^codex-cli (\S+)$/.exec(text.trim())?.[1]??null;
-export const serverVersion=text=>/^[^\s/]+\/(\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?)(?:\s|$)/.exec(text??'')?.[1]??null;
+export const serverVersion=text=>/^(?:Codex Desktop|[^\s/]+)\/(\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?)(?:\s|$)/.exec(text??'')?.[1]??null;
 export const compatibilityFile=c=>c.compatibility_file??join(c.expected_codex_home,'app-server-tools','compatibility.json');
 export class CompatibilityPolicy{
  constructor(config,{failureFile}={}){this.failureFile=failureFile;this.config=config;this.file=compatibilityFile(config);requireValue(resolve(this.file)===this.file,'INVALID_CONFIG','Compatibility file must be absolute.');this.data={schema_version:1,registrations:[]};this.state='degraded';this.reason='not_connected';this.tail=Promise.resolve();}
