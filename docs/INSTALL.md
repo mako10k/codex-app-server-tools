@@ -7,7 +7,7 @@ Requirements: Linux/WSL, Node.js >=22, util-linux `flock`, Codex CLI and an exis
 Install the tagged Git marketplace:
 
 ```sh
-codex plugin marketplace add mako10k/codex-app-server-tools --ref v0.6.12-candidate
+codex plugin marketplace add mako10k/codex-app-server-tools --ref v0.6.13-candidate
 codex plugin add thread-watch@codex-app-server-tools
 ```
 

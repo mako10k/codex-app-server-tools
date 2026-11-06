@@ -1,6 +1,6 @@
 {
   "name": "codex-app-server-tools",
-  "version": "0.6.12-candidate",
+  "version": "0.6.13-candidate",
   "private": true,
   "type": "module",
   "description": "Typed chat and goal operations, bounded heartbeats and lifecycle watches through the official App Server Proxy.",

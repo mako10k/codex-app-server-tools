@@ -1,6 +1,6 @@
 # Codex App Server Tools
 
-Local MCP tools for inspecting and coordinating chats on an existing Codex App Server through the official Proxy. Candidate release: **0.6.12-candidate**, MIT licensed.
+Local MCP tools for inspecting and coordinating chats on an existing Codex App Server through the official Proxy. Candidate release: **0.6.13-candidate**, MIT licensed.
 
 This is a Codex plugin, not an npm publication. It requires Linux/WSL, Node.js >=22, util-linux flock, the Codex CLI and an already running App Server exposing the configured current-user Unix socket. Native Windows and macOS have not been validated. No additional npm packages are required, and Codex/Node binaries are not redistributed.
 
@@ -23,7 +23,7 @@ The Plugin adds no capability grants, thread/cwd access policy or downstream Too
 Install the tagged Git marketplace:
 
 ```sh
-codex plugin marketplace add mako10k/codex-app-server-tools --ref v0.6.12-candidate
+codex plugin marketplace add mako10k/codex-app-server-tools --ref v0.6.13-candidate
 codex plugin add thread-watch@codex-app-server-tools
 ```
 
