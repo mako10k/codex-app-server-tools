@@ -1,0 +1,1377 @@
+{
+  "tools": [
+    {
+      "name": "as_status",
+      "description": "Read the local plugin management plane without starting a controller or connecting to App Server. Unknown stop reasons remain unknown.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "query_operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_control",
+      "description": "Control only this candidate profile. service_set takes service+enabled; reconnect takes service=proxy; compatibility_set takes registration+expected_settings_digest; compatibility_reload rechecks versions. Requires actual caller metadata. Shared App Server and pinned monitors are excluded.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "service_set",
+              "reconnect",
+              "compatibility_set",
+              "compatibility_reload"
+            ]
+          },
+          "service": {
+            "type": "string",
+            "enum": [
+              "controller",
+              "proxy",
+              "watch",
+              "heartbeat"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "expected_settings_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "registration": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "proxy_cli_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "app_server_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "unknown",
+                  "compatible",
+                  "incompatible"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "evidence": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 16,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                }
+              }
+            },
+            "required": [
+              "proxy_cli_version",
+              "app_server_version",
+              "decision",
+              "reason",
+              "evidence"
+            ]
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "action"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_goal_get",
+      "description": "Read the existing goal without creating/resuming one. Returns a snapshot digest.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "thread_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_goal_set",
+      "description": "Set explicit goal fields. origin=user requires an actual user request; automatic supplies no user authorization. Accepted is not completed.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "blocked",
+              "complete"
+            ]
+          },
+          "token_budget": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "user",
+              "automatic"
+            ]
+          },
+          "expected_goal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "thread_id",
+          "origin"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_goal_pause",
+      "description": "Explicit goal pause. Uses App Server goal lifecycle; never infers owner authorization. Resume only a paused goal.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "user",
+              "automatic"
+            ]
+          },
+          "expected_goal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "thread_id",
+          "origin"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_goal_resume",
+      "description": "Explicit goal resume. Uses App Server goal lifecycle; never infers owner authorization. Resume only a paused goal.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "user",
+              "automatic"
+            ]
+          },
+          "expected_goal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "thread_id",
+          "origin"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_goal_clear",
+      "description": "Explicit goal clear. Uses App Server goal lifecycle; never infers owner authorization. Resume only a paused goal.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "user",
+              "automatic"
+            ]
+          },
+          "expected_goal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "thread_id",
+          "origin"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_heartbeat_set",
+      "description": "Register/update an expiring self-chat clock schedule. No capability/catalog/worktime configuration is required; check_id supplies the default label. No external polling success ACK.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "heartbeat_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "expected_generation": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "starts_at": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "expires_at": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "checks": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "check_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "interval_seconds": {
+                  "type": "integer",
+                  "minimum": 60,
+                  "maximum": 86400
+                },
+                "first_due_at": {
+                  "type": "string",
+                  "maxLength": 40
+                }
+              },
+              "required": [
+                "check_id",
+                "interval_seconds"
+              ]
+            }
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "starts_at",
+          "expires_at",
+          "checks"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_heartbeat_list",
+      "description": "Read only the actual caller own local schedules and dispatch receipts; never starts a backend or a timer.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "heartbeat_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "caller_thread_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_heartbeat_remove",
+      "description": "Stop an owned heartbeat at the expected generation; leaves watches and submitted inputs unchanged.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "heartbeat_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "expected_generation": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "heartbeat_id",
+          "expected_generation"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_watch_set",
+      "description": "Register/update selected termination, compaction, goal and user-prompt events. Related self actions are suppressed for the configured short window by default. Actual caller metadata and operation_id required; no timers.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "watch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "destination_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "turn_ended",
+                "compaction_started",
+                "compaction_completed",
+                "goal_updated",
+                "goal_cleared",
+                "user_prompt"
+              ]
+            }
+          },
+          "suppress_self": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32768
+          },
+          "expected_generation": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "source_thread_id",
+          "destination_thread_id",
+          "events"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_watch_list",
+      "description": "Read local registrations, delivery receipts and monitoring coverage; does not connect.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "owner_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "destination_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 512
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_watch_remove",
+      "description": "Remove an owned watch at its expected generation. Never remove controller lock files.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "watch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "expected_generation": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "watch_id",
+          "expected_generation"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_chat_list",
+      "description": "Read stored chat metadata only. Cursor preserves filters and profile scope.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "cwd": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "updated_since": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_chat_inspect",
+      "description": "Read chat identity/status and local watch associations without resuming.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "thread_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_chat_send",
+      "description": "Send normal input under an explicit user instruction. Idle starts, active steers only at the expected turn. Accepted is not completed.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32768
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "start",
+              "steer"
+            ]
+          },
+          "expected_turn_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "thread_id",
+          "text"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_chat_manage",
+      "description": "Explicit chat management. Changes require caller_thread_id and operation_id. create: cwd; fork/resume/unarchive: thread_id; rename: thread_id+name; archive: thread_id+expected_descendants; interrupt: thread_id+expected_turn_id. operation_status is read-only and requires caller_thread_id+query_operation_id. No shell, delete or policy overrides.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "fork",
+              "rename",
+              "archive",
+              "unarchive",
+              "resume",
+              "interrupt",
+              "operation_status"
+            ]
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cwd": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "last_turn_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "expected_turn_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "expected_descendants": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "maxItems": 100
+          },
+          "include_descendants": {
+            "type": "boolean"
+          },
+          "query_operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_chat_progress",
+      "description": "Read observed progress and gaps, never inferred goal completion. Unwatched resume subscriptions expire with the connection epoch.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "after_cursor": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "wait_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30000
+          }
+        },
+        "required": [
+          "thread_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_chat_history",
+      "description": "Read explicitly selected turn history with bounded Unicode text continuations. Missing data is not a successful audit.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "view": {
+            "type": "string",
+            "enum": [
+              "turns",
+              "items",
+              "messages"
+            ]
+          },
+          "turn_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "latest": {
+            "type": "boolean"
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "thread_id",
+          "view"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_mcp_inspect",
+      "description": "Inspect existing per-thread MCP connection and Tool schemas; never adds/reloads servers.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "server_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "thread_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "as_mcp_call",
+      "description": "Downstream Tool call without Plugin permission or allowlist gates. May have external effects; no blind retries.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "backend_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "caller_thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "thread_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "server": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "tool": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "arguments": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "caller_thread_id",
+          "operation_id",
+          "thread_id",
+          "server",
+          "tool",
+          "arguments"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "as_monitoring_view",
+      "title": "監視・被監視・ハートビート",
+      "description": "Show existing monitoring relationships and heartbeat schedules in the Codex right pane. Reads saved state only; does not start monitoring or change registrations. Optional Web dashboard is separate.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "_meta": {
+        "ui": {
+          "resourceUri": "ui://thread-watch/monitoring.html"
+        },
+        "openai/ui": {
+          "entrypoints": [
+            {
+              "type": "thread"
+            }
+          ],
+          "preferredModelDisplayMode": "fullscreen"
+        }
+      }
+    },
+    {
+      "name": "as_dashboard",
+      "description": "Open the bundled GUI for watch relationships, watched chats and all local heartbeat schedules. Returns dashboard_url for a browser panel. Reads local state only; never starts monitoring or changes registrations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "watch_thread",
+      "description": "Register/update/remove an App Server turn/completed watch. Timers are removed. source→destination must remain a DAG. Explicit caller_thread_id is required because host caller metadata is not assumed. Defaults destination to caller. Owner is retained on update; Both delivery labels send normal input (idle turn/start or active turn/steer). Hooks are deferred.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "action",
+          "caller_thread_id"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "upsert",
+              "remove"
+            ]
+          },
+          "caller_thread_id": {
+            "type": "string"
+          },
+          "watch_id": {
+            "type": "string"
+          },
+          "source_thread_id": {
+            "type": "string"
+          },
+          "destination_thread_id": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32768
+          },
+          "delivery": {
+            "type": "string",
+            "enum": [
+              "wake",
+              "message"
+            ],
+            "default": "wake"
+          },
+          "check_interval_seconds": {
+            "type": "null",
+            "description": "Timers removed; only null is accepted.",
+            "default": null
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_thread_watchers",
+      "description": "List registrations observing thread_id (default explicit caller_thread_id), including registering/observer owner and notification destination separately. Read-only; use built-in thread messaging to contact a watcher.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "caller_thread_id"
+        ],
+        "properties": {
+          "caller_thread_id": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

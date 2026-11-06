@@ -1,0 +1,19 @@
+{
+  "name": "codex-app-server-tools",
+  "version": "0.6.11-candidate",
+  "private": true,
+  "type": "module",
+  "description": "Typed chat and goal operations, bounded heartbeats and lifecycle watches through the official App Server Proxy.",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "as-tools": "./bin/as-tools.js",
+    "as-dashboard": "./bin/as-dashboard.js"
+  },
+  "scripts": {
+    "start": "node bin/as-tools.js mcp",
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT"
+}

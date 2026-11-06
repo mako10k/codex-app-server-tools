@@ -1,0 +1,7 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>App Server Tools — 監視ダッシュボード</title><link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/dashboard.css"><script type="module" src="/dashboard.js"></script></head><body>
+<header><img src="/icon.svg" width="50" height="50" alt=""><div><span class="eyebrow">APP SERVER TOOLS</span><h1>監視ダッシュボード</h1></div><button id="refresh">更新</button></header>
+<main><div class="intro"><p>チャットのつながりと、定期通知の予定。</p><span id="updated" role="status">読込み中…</span></div><div id="profiles" class="profiles"></div>
+<section class="metrics" aria-label="登録件数"><div><span>監視の登録</span><strong id="watch-count">—</strong></div><div><span>被監視チャット</span><strong id="source-count">—</strong></div><div><span>期限内のハートビート</span><strong id="heartbeat-count">—</strong></div></section>
+<div class="toolbar"><div class="tabs" role="tablist" aria-label="表示内容"><button role="tab" aria-selected="true" data-tab="watch">監視</button><button role="tab" aria-selected="false" data-tab="watched">被監視</button><button role="tab" aria-selected="false" data-tab="heartbeat">ハートビート</button></div><label>チャット<select id="thread"><option value="">すべてのチャット</option></select></label></div>
+<div class="section-head"><div><h2 id="title">監視の登録</h2><p id="description"></p></div><span id="result-count"></span></div><div id="error" role="alert" hidden></div><div id="content" role="tabpanel"></div>
+<footer>更新ボタンで最新の保存状態を取得します。登録内容と、controllerの接続状態は分けて表示しています。</footer></main></body></html>

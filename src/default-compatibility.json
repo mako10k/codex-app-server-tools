@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "registrations": [
+    {
+      "proxy_cli_version": "0.166.0",
+      "app_server_version": "0.166.0",
+      "protocol_baseline": "0.166.0",
+      "scope": "all",
+      "evidence": "Compiled client protocol baseline."
+    },
+    {
+      "proxy_cli_version": "0.167.0",
+      "app_server_version": "0.167.0",
+      "protocol_baseline": "0.166.0",
+      "scope": "all",
+      "evidence": "docs/as-compatibility-smoke-2026-11-06.md: 169 type dependencies assessed, 132 tests and actual read-only smoke passed; production mutations not exercised. Owner requested default admission on 2026-11-06."
+    }
+  ]
+}

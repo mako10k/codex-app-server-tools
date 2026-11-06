@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "thread-watch": {
+      "type": "stdio",
+      "command": "sh",
+      "args": [
+        "scripts/launch-as-mcp.sh"
+      ],
+      "cwd": ".",
+      "env_vars": [
+        "HOME",
+        "PATH",
+        "CODEX_HOME",
+        "CODEX_SQLITE_HOME",
+        "WSL_INTEROP",
+        "THREAD_WATCH_STATE_DIR",
+        "THREAD_WATCH_NODE_PATH",
+        "THREAD_WATCH_CODEX_PATH",
+        "THREAD_WATCH_BACKEND_SOCKET",
+        "AS_TOOLS_CONFIG"
+      ]
+    }
+  }
+}

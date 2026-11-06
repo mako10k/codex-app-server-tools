@@ -1,0 +1,27 @@
+{
+  "name": "thread-watch",
+  "version": "0.6.11-candidate",
+  "description": "Typed chat and goal operations, bounded heartbeats and lifecycle watches through the official App Server Proxy.",
+  "requires_local_executor": true,
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "interface": {
+    "displayName": "App Server Tools",
+    "shortDescription": "Inspect, coordinate and watch chats on the same backend.",
+    "developerName": "Local workspace",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "composerIcon": "./assets/icon.png",
+    "composerIconDark": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo.png",
+    "brandColor": "#136A79",
+    "brandColorDark": "#72D9F4",
+    "defaultPrompt": [
+      "監視ダッシュボードを開いて、監視・被監視・ハートビートを表示して"
+    ]
+  }
+}
